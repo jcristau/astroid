@@ -109,11 +109,13 @@ class LocalsDictNode(treebase.LookupMixIn,
         """
         return self.locals[item][0]
 
-    def __iter__(self):
-        """method from the `dict` interface returning an iterator on
-        `self.keys()`
-        """
-        return iter(self.locals)
+    # TODO
+
+    # def __iter__(self):
+    #     """method from the `dict` interface returning an iterator on
+    #     `self.keys()`
+    #     """
+    #     return iter(self.locals)
 
     def keys(self):
         """method from the `dict` interface returning a tuple containing

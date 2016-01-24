@@ -81,6 +81,7 @@ from astroid.interpreter.util import are_exclusive, unpack_infer
 from astroid.interpreter.lookup import builtin_lookup
 from astroid.builder import parse
 from astroid.util import Uninferable, YES
+from astroid.tree import zipper
 
 
 # transform utilities (filters and decorator)
@@ -88,7 +89,7 @@ from astroid.util import Uninferable, YES
 class AsStringRegexpPredicate(object):
     """ClassDef to be used as predicate that may be given to `register_transform`
 
-    First argument is a regular expression that will be searched against the `as_string`
+    First argument is a regular expression that will be searched against the `asstring`
     representation of the node onto which it's applied.
 
     If specified, the second argument is an `attrgetter` expression that will be
