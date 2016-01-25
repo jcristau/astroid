@@ -89,8 +89,9 @@ from astroid.tree import zipper
 class AsStringRegexpPredicate(object):
     """ClassDef to be used as predicate that may be given to `register_transform`
 
-    First argument is a regular expression that will be searched against the `asstring`
-    representation of the node onto which it's applied.
+    First argument is a regular expression that will be searched
+    against the `as_string` representation of the node onto which it's
+    applied.
 
     If specified, the second argument is an `attrgetter` expression that will be
     applied on the node first to get the actual node on which `as_string` should
@@ -98,6 +99,7 @@ class AsStringRegexpPredicate(object):
 
     WARNING: This can be fairly slow, as it has to convert every AST node back
     to Python code; you should consider examining the AST directly instead.
+
     """
     def __init__(self, regexp, expression=None):
         self.regexp = re.compile(regexp)

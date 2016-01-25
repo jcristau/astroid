@@ -11,7 +11,7 @@ from astroid.tree import zipper
 
 # __init__.py screens out the empty init files, testdata because of
 # the deliberately-broken files, and unittests because of #310.
-astroid_file = strategies.sampled_from(os.path.join(p, n) for p, _, ns in os.walk('astroid/') for n in ns if n.endswith('.py') and 'unittest' not in n and '__init__.py' not in n and 'testdata' not in p)
+astroid_file = strategies.sampled_from(os.path.join(p, n) for p, _, ns in os.walk('astroid/') for n in ns if n.endswith('.py') and '__init__.py' not in n)
 
 def parse_ast(name):
     with open(name, 'r') as source_file:

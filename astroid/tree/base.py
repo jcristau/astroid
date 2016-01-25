@@ -75,6 +75,8 @@ class NodeNG(object):
                        for f in self._astroid_fields) and
                     all(getattr(self, f) == getattr(other, f)
                         for f in self._other_fields))
+        else:
+            return False
 
     def __ne__(self, other):
         return not self == other

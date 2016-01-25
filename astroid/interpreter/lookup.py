@@ -32,8 +32,7 @@ except ImportError:
     from dictproxyhack import dictproxy as MappingProxyType
 
 
-class LocalsDictNode(treebase.LookupMixIn,
-                     treebase.NodeNG):
+class LocalsDictNode(treebase.LookupMixIn, treebase.NodeNG):
     """Provides locals handling common to Module, FunctionDef
     and ClassDef nodes, including a dict like interface for direct access
     to locals information
@@ -108,36 +107,6 @@ class LocalsDictNode(treebase.LookupMixIn,
         :raises KeyError: if the name is not defined
         """
         return self.locals[item][0]
-
-    # TODO
-
-    # def __iter__(self):
-    #     """method from the `dict` interface returning an iterator on
-    #     `self.keys()`
-    #     """
-    #     return iter(self.locals)
-
-    def keys(self):
-        """method from the `dict` interface returning a tuple containing
-        locally defined names
-        """
-        return self.locals.keys()
-
-    def values(self):
-        """method from the `dict` interface returning a tuple containing
-        locally defined nodes which are instance of `FunctionDef` or `ClassDef`
-        """
-        return tuple(v[0] for v in self.locals.values())
-
-    def items(self):
-        """method from the `dict` interface returning a list of tuple
-        containing each locally defined name with its associated node,
-        which is an instance of `FunctionDef` or `ClassDef`
-        """
-        return tuple((k, v[0]) for k, v in self.locals.items())
-
-    def __contains__(self, name):
-        return name in self.locals
 
 
 def builtin_lookup(name):
