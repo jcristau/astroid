@@ -146,7 +146,7 @@ class NodeNG(object):
         """an optimized version of list(get_children())[-1]"""
         for field in self._astroid_fields[::-1]:
             attr = getattr(self, field)
-            if not attr: # None or empty listy / tuple
+            if not attr or isinstance(attr, treeabc.Empty): # None or empty listy / tuple
                 continue
             if isinstance(attr, (list, tuple)):
                 return attr[-1]
@@ -633,7 +633,7 @@ class LookupMixIn(object):
                 if not (optional_assign or interpreterutil.are_exclusive(_stmts[pindex], node)):
                     del _stmt_parents[pindex]
                     del _stmts[pindex]
-            if isinstance(node, treeabc.AssignName):
+            if isinstance(node, (treeabc.Param, treeabc.AssignName)):
                 if not optional_assign and stmt.parent is mystmt.parent:
                     _stmts = []
                     _stmt_parents = []

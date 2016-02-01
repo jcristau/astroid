@@ -687,7 +687,7 @@ class CallSite(object):
 
         # Too many arguments given and no variable arguments.
         if len(self.positional_arguments) > len(self._funcnode.args.args):
-            if not self._funcnode.args.vararg:
+            if isinstance(self._funcnode.args.vararg, treeabc.Empty):
                 raise exceptions.InferenceError('Too many positional arguments '
                                                 'passed to {func!r} that does '
                                                 'not have *args.',
@@ -748,7 +748,8 @@ class CallSite(object):
             except IndexError:
                 pass
 
-        if self._funcnode.args.kwarg == name:
+        if (not isinstance(self._funcnode.args.kwarg, treeabc.Empty)
+                and self._funcnode.args.kwarg.name == name):
             # It wants all the keywords that were passed into
             # the call site.
             if self.has_invalid_keywords():
@@ -769,7 +770,8 @@ class CallSite(object):
             kwarg.postinit(keys, values)
             return iter((kwarg, ))
 
-        elif self._funcnode.args.vararg == name:
+        if (not isinstance(self._funcnode.args.vararg, treeabc.Empty)
+                and self._funcnode.args.vararg.name == name):
             # It wants all the args that were passed into
             # the call site.
             if self.has_invalid_arguments():
@@ -813,7 +815,8 @@ class LambdaFunctionMixin(QualifiedNameMixin, base.FilterStmtsMixin):
         return CallSite(self, args, keywords)
 
     def scope_lookup(self, node, name, offset=0):
-        if node in self.args.defaults or node in self.args.kw_defaults:
+        
+        if node in itertools.chain((self.args.args, self.args.kwonlyargs)):
             frame = self.parent.frame()
             # line offset to avoid that def func(f=func) resolve the default
             # value to the defined function
@@ -829,10 +832,10 @@ class LambdaFunctionMixin(QualifiedNameMixin, base.FilterStmtsMixin):
             names = _rec_get_names(self.args.args)
         else:
             names = []
-        if self.args.vararg:
-            names.append(self.args.vararg)
-        if self.args.kwarg:
-            names.append(self.args.kwarg)
+        if self.args.vararg and not isinstance(self.args.vararg, treeabc.Empty):
+            names.append(self.args.vararg.name)
+        if self.args.kwarg and not isinstance(self.args.vararg, treeabc.Empty):
+            names.append(self.args.kwarg.name)
         return names
 
     def callable(self):

@@ -238,6 +238,7 @@ def locals_new_scope(node, locals_):
 @_get_locals.register(treeabc.DelName)
 @_get_locals.register(treeabc.FunctionDef)
 @_get_locals.register(treeabc.ClassDef)
+@_get_locals.register(treeabc.Param)
 def locals_name(node, locals_):
     '''These nodes add a name to the local variables.  AssignName and
     DelName have no children while FunctionDef and ClassDef start a
@@ -265,9 +266,9 @@ def locals_reserved_name(node, locals_):
 def locals_arguments(node, locals_):
     '''Other names assigned by functions have AssignName nodes that are
     children of an Arguments node.'''
-    if node.vararg:
+    if node.vararg and not isinstance(node.vararg, treeabc.Empty):
         locals_[node.vararg].append(node)
-    if node.kwarg:
+    if node.kwarg and not isinstance(node.vararg, treeabc.Empty):
         locals_[node.kwarg].append(node)
     for n in node.get_children():
         _get_locals(n, locals_)

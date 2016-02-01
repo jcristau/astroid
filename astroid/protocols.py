@@ -304,6 +304,7 @@ def mulass_assigned_stmts(self, nodes, node=None, context=None, assign_path=None
 
 @assigned_stmts.register(treeabc.AssignName)
 @assigned_stmts.register(treeabc.AssignAttr)
+@assigned_stmts.register(treeabc.Param)
 def assend_assigned_stmts(self, nodes, node=None, context=None, assign_path=None):
     return self.parent.assigned_stmts(self, context=context)
 
@@ -311,7 +312,8 @@ def assend_assigned_stmts(self, nodes, node=None, context=None, assign_path=None
 def _arguments_infer_argname(self, name, context, nodes):
     # arguments information may be missing, in which case we can't do anything
     # more
-    if not (self.args or self.vararg or self.kwarg):
+    if not self.args and (isinstance(self.vararg, treeabc.Empty) and
+                          isinstance(self.kwarg, treeabc.Empty)):
         yield util.Uninferable
         return
     # first argument of instance/class method
@@ -336,10 +338,10 @@ def _arguments_infer_argname(self, name, context, nodes):
         return
 
     # TODO: just provide the type here, no need to have an empty Dict.
-    if name == self.vararg:
+    if not isinstance(self.vararg, treeabc.Empty) and name == self.vararg.name:
         yield nodes.Tuple(parent=self)
         return
-    if name == self.kwarg:
+    if not isinstance(self.kwarg, treeabc.Empty) and name == self.kwarg.name:
         yield nodes.Dict(parent=self)
         return
     # if there is a default value, yield it. And then yield Uninferable to reflect
